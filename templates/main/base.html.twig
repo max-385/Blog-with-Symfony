@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}{{ title }}!{% endblock %}</title>
     {% block stylesheets %}
         <link rel="stylesheet"
               href="{{ asset('assets/framework/fontawesome-free-5.15.2-web/fontawesome-free-5.15.2-web/css/all.css') }}">
@@ -49,6 +49,8 @@
             integrity="sha512-BmM0/BQlqh02wuK5Gz9yrbe7VyIVwOzD1o40yi1IsTjriX/NGF37NyXHfmFzIlMmoSIBXgqDiG1VNU6kB5dBbA=="
             crossorigin="anonymous"></script>
     <script src="{{ asset('assets/framework/bootstrap-4.6.0-dist/bootstrap-4.6.0-dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/framework/vue/vue.js') }}"></script>
+    {% block addJs %} {% endblock %}
 {% endblock %}
 </body>
 </html>

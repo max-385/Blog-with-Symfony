@@ -2,17 +2,31 @@
 
 {% block body %}
 
-    <h1>
-        {{ title }}
-    </h1>
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 text-center">
+                <h1 class="display-4">
+                    {{ title }}
+                </h1>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-12">
+                <a class="btn btn-secondary mb-3" href="{{ path('admin_users_create') }}">Create new user</a>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-12">
+                <h3>User list:</h3>
+                <ul>
+                    {% for user in users %}
+                        <li> {{ user.email }}, {{ user.roles | json_encode }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    <a href="{{ path('admin_users_create') }}">Create new user</a>
 
-    <h3>User list:</h3>
-    <ul>
-        {% for user in users %}
-            <li> {{ user.email }}, {{ user.roles | json_encode }} </li>
-        {% endfor %}
-    </ul>
 
 {% endblock %}
