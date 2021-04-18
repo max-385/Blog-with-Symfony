@@ -1,0 +1,45 @@
+{% extends 'admin/adminbase.html.twig' %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 text-center">
+                <h1 class="display-4">
+                    {{ title }}
+                </h1>
+            </div>
+        </div>
+
+        <div class="row no-gutters">
+            <div class="col-12">
+                <a class="btn btn-secondary mb-3" href="{{ path('admin_category_create') }}">Create new category</a>
+            </div>
+        </div>
+
+        <div class="row no-gutters ">
+            <div class="col-6 justify-content-center">
+                {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row no-gutters">
+            <div class="col-12">
+                <h3>Category list:</h3>
+                <ul>
+                    {% for category in categories %}
+                        <li> {{ category.name }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

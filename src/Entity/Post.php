@@ -109,9 +109,11 @@ class Post
         return $this;
     }
 
-    public function setCreatedAtValue()
+    public function setCreatedAtValue(): self
     {
         $this->created_at = new \DateTime();
+
+        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
@@ -126,9 +128,11 @@ class Post
         return $this;
     }
 
-    public function setUpdatedAtValue()
+    public function setUpdatedAtValue(): self
     {
         $this->updated_at = new \DateTime();
+
+        return $this;
     }
 
     public function getIsPublished(): ?bool
@@ -136,14 +140,18 @@ class Post
         return $this->is_published;
     }
 
-    public function setIsPublished()
+    public function setIsPublished(): self
     {
         $this->is_published = self::PUBLISHED;
+
+        return $this;
     }
 
-    public function setIsDraft()
+    public function setIsDraft(): self
     {
         $this->is_published = self::DRAFT;
+
+        return $this;
     }
 
     public function getCategory(): ?Category

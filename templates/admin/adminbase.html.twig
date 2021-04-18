@@ -27,6 +27,12 @@
                 <li class="nav-item {{ route ==  'admin_users' ? 'active' }}">
                     <a class="nav-link" href="{{ path('admin_users') }}">Users</a>
                 </li>
+                <li class="nav-item {{ route ==  'admin_category' ? 'active' }}">
+                    <a class="nav-link" href="{{ path('admin_category') }}">Categories</a>
+                </li>
+                <li class="nav-item {{ route ==  'admin_post' ? 'active' }}">
+                    <a class="nav-link" href="{{ path('admin_post') }}">Posts</a>
+                </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="{{ path('home') }}">Main page</a>
                 </li>

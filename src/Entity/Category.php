@@ -83,6 +83,13 @@ class Category
         return $this;
     }
 
+    public function setCreatedAtValue(): self
+    {
+        $this->created_at = new \DateTime();
+
+        return $this;
+    }
+
     public function getUpdateAt(): ?\DateTimeInterface
     {
         return $this->update_at;
@@ -91,6 +98,13 @@ class Category
     public function setUpdateAt(\DateTimeInterface $update_at): self
     {
         $this->update_at = $update_at;
+
+        return $this;
+    }
+
+    public function setUpdatedAtValue(): self
+    {
+        $this->update_at = new \DateTime();
 
         return $this;
     }

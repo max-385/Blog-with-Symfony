@@ -1,0 +1,32 @@
+{% extends 'admin/adminbase.html.twig' %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 text-center">
+                <h1 class="display-4">
+                    {{ title }}
+                </h1>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-12">
+                <a class="btn btn-secondary mb-3" href="{{ path('admin_post_create') }}">Create new post</a>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-12">
+                <h3>Post list:</h3>
+                <ul>
+                    {% for post in posts %}
+                        <li> {{ post.title }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
