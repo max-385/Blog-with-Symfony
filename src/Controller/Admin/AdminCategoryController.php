@@ -54,4 +54,30 @@ class AdminCategoryController extends AdminBaseController
 
         return $this->render('admin/category/form.html.twig', $forRender);
     }
+
+    /**
+     * @Route("/admin/category/update/{id}", name="admin_category_update")
+     * @param int $id
+     * @param Request $request
+     * @return RedirectResponse|Response
+     */
+    public function updateCategory(int $id, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $category = $em->getRepository(Category::class)->find($id);
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $category->setUpdatedAtValue();
+            $em->flush();
+            $this->addFlash('success', 'Category has been updated successfully');
+            return $this->redirectToRoute('admin_category');
+        }
+        $forRender = parent::renderDefault();
+        $forRender['title'] = 'Category update';
+        $forRender['form'] = $form->createView();
+        return $this->render('admin/category/form.html.twig', $forRender);
+    }
+
+
 }
