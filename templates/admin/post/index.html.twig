@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="row no-gutters">
             <div class="col-12 text-center">
                 <h1 class="display-4">
@@ -10,23 +10,48 @@
                 </h1>
             </div>
         </div>
+
         <div class="row no-gutters">
-            <div class="col-12">
-                <a class="btn btn-secondary mb-3" href="{{ path('admin_post_create') }}">Create new post</a>
+            {% if categories is not empty %}
+                <div class="col-12">
+                    <a class="btn btn-secondary mb-3" href="{{ path('admin_post_create') }}">Create new post</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="row no-gutters ">
+            <div class="col-6 justify-content-center">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             </div>
         </div>
+
         <div class="row no-gutters">
             <div class="col-12">
-                <h3>Post list:</h3>
-                <ul>
-                    {% for post in posts %}
-                        <li> {{ post.title }} </li>
-                    {% endfor %}
-                </ul>
+                {% if categories is empty %}
+                    <div class="alert alert-success">
+                        <p>Impossible to create new post, while category list is empty</p>
+                        <a href="{{ path('admin_category_create') }}">Create category</a>
+                    </div>
+                {% else %}
+                    <h3>Post list:</h3>
+                    <ul>
+                        {% for post in posts %}
+                            <li> {{ post.title }}
+                                <a href="{{ path('admin_post_update', {'id': post.id}) }}"
+                                   class="btn btn-link">
+                                    Update post
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
         </div>
     </div>
-
 
 
 {% endblock %}

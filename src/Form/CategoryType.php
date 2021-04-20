@@ -36,7 +36,7 @@ class CategoryType extends AbstractType
             ->add('save', SubmitType::class, [
                 'label' => 'Save category',
                 'attr' => [
-                    'class' => 'btn btn-success'
+                    'class' => 'btn btn-success float-left mx-2'
                 ]
             ])
             ->add('delete', SubmitType::class, [
