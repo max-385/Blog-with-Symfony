@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
+use App\Service\FileManagerServiceInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,15 +36,21 @@ class AdminPostController extends AdminBaseController
     /**
      * @Route("/admin/post/create", name="admin_post_create")
      * @param Request $request
+     * @param FileManagerServiceInterface $fileManagerService
      * @return RedirectResponse|Response
      */
-    public function createPost(Request $request)
+    public function createPost(Request $request, FileManagerServiceInterface $fileManagerService)
     {
         $post = new Post();
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            if ($image) {
+                $filename = $fileManagerService->uploadPostImage($image);
+                $post->setImage($filename);
+            }
             $post->setCreatedAtValue()->setUpdatedAtValue()->setIsPublished();
             $em->persist($post);
             $em->flush();
@@ -61,20 +68,34 @@ class AdminPostController extends AdminBaseController
      * @Route("/admin/post/update/{id}", name="admin_post_update")
      * @param int $id
      * @param Request $request
+     * @param FileManagerServiceInterface $fileManagerService
      * @return RedirectResponse|Response
      */
-    public function updatePost(int $id, Request $request)
+    public function updatePost(int $id, Request $request, FileManagerServiceInterface $fileManagerService)
     {
         $em = $this->getDoctrine()->getManager();
         $post = $em->getRepository(Post::class)->find($id);
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            if($form->get('save')->isClicked()){
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $image = $form->get('image')->getData();
+                $oldImage = $post->getImage();
+                if ($image) {
+                    $filename = $fileManagerService->uploadPostImage($image);
+                    $post->setImage($filename);
+                    if ($oldImage) {
+                        $fileManagerService->removePostImage($oldImage);
+                    }
+                }
                 $post->setUpdatedAtValue();
                 $this->addFlash('success', 'Post has been updated successfully');
             }
-            if($form->get('delete')->isClicked()){
+            if ($form->get('delete')->isClicked()) {
+                $image = $post->getImage();
+                if($image){
+                    $fileManagerService->removePostImage($image);
+                }
                 $em->remove($post);
                 $this->addFlash('success', 'Post has been deleted successfully');
             }
