@@ -34,7 +34,7 @@
             <ul>
                 {% for category in categories %}
                     <li> {{ category.name }}
-                        <a href="{{ path('admin_category_update', {'id': category.id}) }}"
+                        <a href="{{ path('admin_category_update', {'categoryId': category.id}) }}"
                            class="btn btn-link">
                             Edit category
                         </a>
