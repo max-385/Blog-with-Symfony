@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,39 +13,60 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Category[]    findAll()
  * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CategoryRepository extends ServiceEntityRepository
+class CategoryRepository extends ServiceEntityRepository implements CategoryRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Category::class);
+        $this->entityManager = $entityManager;
     }
 
-    // /**
-    //  * @return Category[] Returns an array of Category objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Category
+    /**
+     * @inheritDoc
+     */
+    public function getAllCategories(): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return parent::findAll();
     }
-    */
+
+    /**
+     * @inheritDoc
+     */
+    public function getCategoryById($id): object
+    {
+        return parent::find($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setCreateCategory(Category $category): object
+    {
+        $category->setCreatedAtValue()->setUpdatedAtValue();
+        $this->entityManager->persist($category);
+        $this->entityManager->flush();
+        return $category;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setUpdateCategory(Category $category): object
+    {
+        $category->setUpdatedAtValue();
+        $this->entityManager->flush();
+        return $category;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setDeleteCategory(Category $category)
+    {
+        $this->entityManager->remove($category);
+        $this->entityManager->flush();
+    }
 }
