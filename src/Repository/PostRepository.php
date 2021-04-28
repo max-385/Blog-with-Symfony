@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Service\FileManagerServiceInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @method Post|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,39 +15,82 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Post[]    findAll()
  * @method Post[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PostRepository extends ServiceEntityRepository
+class PostRepository extends ServiceEntityRepository implements PostRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private $entityManager;
+    private $fileManagerService;
+
+    public function __construct(ManagerRegistry $registry,
+                                EntityManagerInterface $entityManager,
+                                FileManagerServiceInterface $fileManagerService)
     {
         parent::__construct($registry, Post::class);
+        $this->entityManager = $entityManager;
+        $this->fileManagerService = $fileManagerService;
     }
 
-    // /**
-    //  * @return Post[] Returns an array of Post objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @inheritDoc
+     */
+    public function getAllPosts(): array
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return parent::findAll();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Post
+    /**
+     * @inheritDoc
+     */
+    public function getPostById(int $id): Object
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return parent::find($id);
     }
-    */
+
+    /**
+     * @inheritDoc
+     */
+    public function setCreatePost(Post $post, ?UploadedFile $imageFile): Object
+    {
+        if ($imageFile) {
+            $imageFilename = $this->fileManagerService->uploadPostImage($imageFile);
+            $post->setImage($imageFilename);
+        }
+
+        $post->setCreatedAtValue()->setUpdatedAtValue()->setIsPublished();
+        $this->entityManager->persist($post);
+        $this->entityManager->flush();
+        return $post;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setUpdatePost(Post $post, ?UploadedFile $imageFile): Post
+    {
+        if ($imageFile) {
+            $oldImageFilename = $post->getImage();
+            if ($oldImageFilename) {
+                $this->fileManagerService->removePostImage($oldImageFilename);
+            }
+            $imageFilename = $this->fileManagerService->uploadPostImage($imageFile);
+            $post->setImage($imageFilename);
+        }
+
+        $post->setUpdatedAtValue();
+        $this->entityManager->flush();
+        return $post;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setDeletePost(Post $post)
+    {
+        $oldImageFilename = $post->getImage();
+        if ($oldImageFilename) {
+            $this->fileManagerService->removePostImage($oldImageFilename);
+        }
+
+        $this->entityManager->remove($post);
+        $this->entityManager->flush();
+    }
 }
