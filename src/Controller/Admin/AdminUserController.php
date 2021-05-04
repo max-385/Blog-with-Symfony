@@ -11,7 +11,6 @@ use App\Service\User\UserService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AdminUserController extends AdminBaseController
 {
@@ -59,10 +58,36 @@ class AdminUserController extends AdminBaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userService->handleUserCreate($user);
+            $this->addFlash('success', 'New User has been added!');
             return $this->redirectToRoute('admin_users');
         }
         $forRender = parent::renderDefault();
         $forRender['title'] = 'User creation form';
+        $forRender['form'] = $form->createView();
+        return $this->render('admin/User/form.html.twig', $forRender);
+    }
+
+
+    /**
+     * @Route("/admin/users/update/{userId}", name="admin_users_update")
+     * @param Request $request
+     * @param int $userId
+     * @return Response
+     */
+    public function update(Request $request, int $userId)
+    {
+        $user = $this->userRepository->getOneUser($userId);
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userService->handleUserUpdate($user);
+            $this->addFlash('success', 'User data has been updated successfully');
+            return $this->redirectToRoute('admin_users');
+        }
+
+        $forRender = parent::renderDefault();
+        $forRender['title'] = 'User update';
         $forRender['form'] = $form->createView();
         return $this->render('admin/User/form.html.twig', $forRender);
     }

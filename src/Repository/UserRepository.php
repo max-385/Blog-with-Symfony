@@ -42,9 +42,28 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
+    /**
+     * @param User $user
+     * @return User
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function setCreateUser(User $user): object
     {
         $this->_em->persist($user);
+        $this->_em->flush();
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return User
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function setUpdateUser(User $user): object
+    {
         $this->_em->flush();
 
         return $this;

@@ -3,7 +3,7 @@
 
 namespace App\Service\User;
 
-Use App\Entity\User;
+use App\Entity\User;
 use App\Repository\UserRepositoryInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -13,6 +13,7 @@ class UserService
      * @var UserRepositoryInterface
      */
     private $userRepository;
+
     /**
      * @var UserPasswordEncoderInterface
      */
@@ -25,6 +26,10 @@ class UserService
     }
 
 
+    /**
+     * @param User $user
+     * @return $this
+     */
     public function handleUserCreate(User $user)
     {
         $password = $this->userPasswordEncoder->encodePassword($user, $user->getPlainPassword());
@@ -32,6 +37,19 @@ class UserService
         $user->setRoles(['ROLE_ADMIN']);
 
         $this->userRepository->setCreateUser($user);
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function handleUserUpdate(User $user)
+    {
+        $password = $this->userPasswordEncoder->encodePassword($user, $user->getPlainPassword());
+        $user->setPassword($password);
+
+        $this->userRepository->setUpdateUser($user);
         return $this;
     }
 }

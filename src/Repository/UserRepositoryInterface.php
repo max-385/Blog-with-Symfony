@@ -15,6 +15,12 @@ interface UserRepositoryInterface
     public function setCreateUser(User $user): object;
 
     /**
+     * @param User $user
+     * @return User
+     */
+    public function setUpdateUser(User $user): object;
+
+    /**
      * @return User[]
      */
     public function getAllUsers(): array;
