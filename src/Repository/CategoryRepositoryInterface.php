@@ -21,15 +21,15 @@ interface CategoryRepositoryInterface
 
     /**
      * @param Category $category
-     * @return Category
+     * @return CategoryRepositoryInterface
      */
-    public function setCreateCategory(Category $category): object;
+    public function setCreateCategory(Category $category): self;
 
     /**
      * @param Category $category
-     * @return Category
+     * @return CategoryRepositoryInterface
      */
-    public function setUpdateCategory(Category $category): object;
+    public function setUpdateCategory(Category $category): self;
 
     /**
      * @param Category $category

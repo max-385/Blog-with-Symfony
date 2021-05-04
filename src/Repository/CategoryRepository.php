@@ -43,22 +43,20 @@ class CategoryRepository extends ServiceEntityRepository implements CategoryRepo
     /**
      * @inheritDoc
      */
-    public function setCreateCategory(Category $category): object
+    public function setCreateCategory(Category $category): CategoryRepositoryInterface
     {
-        $category->setCreatedAtValue()->setUpdatedAtValue();
         $this->entityManager->persist($category);
         $this->entityManager->flush();
-        return $category;
+        return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function setUpdateCategory(Category $category): object
+    public function setUpdateCategory(Category $category): CategoryRepositoryInterface
     {
-        $category->setUpdatedAtValue();
         $this->entityManager->flush();
-        return $category;
+        return $this;
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
 use App\Repository\CategoryRepositoryInterface;
+use App\Service\Category\CategoryService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,9 +20,12 @@ class AdminCategoryController extends AdminBaseController
 
     private $categoryRepository;
 
-    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    private $categoryService;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository, CategoryService $categoryService)
     {
         $this->categoryRepository = $categoryRepository;
+        $this->categoryService = $categoryService;
     }
 
     /**
@@ -47,7 +51,7 @@ class AdminCategoryController extends AdminBaseController
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->categoryRepository->setCreateCategory($category);
+            $this->categoryService->handleCreateCategory($category);
             $this->addFlash('success', 'A new category has been added!');
             return $this->redirectToRoute('admin_category');
         }
@@ -71,11 +75,11 @@ class AdminCategoryController extends AdminBaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $this->categoryRepository->setUpdateCategory($category);
+                $this->categoryService->handleUpdateCategory($category);
                 $this->addFlash('success', 'Category has been updated successfully');
             }
             if ($form->get('delete')->isClicked()) {
-                $this->categoryRepository->setDeleteCategory($category);
+                $this->categoryService->handleDeleteCategory($category);
                 $this->addFlash('success', 'Category has been deleted successfully');
             }
             return $this->redirectToRoute('admin_category');
