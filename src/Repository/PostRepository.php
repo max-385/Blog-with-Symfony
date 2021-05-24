@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Post;
-use App\Service\FileManagerServiceInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,15 +17,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class PostRepository extends ServiceEntityRepository implements PostRepositoryInterface
 {
     private $entityManager;
-    private $fileManagerService;
 
     public function __construct(ManagerRegistry $registry,
-                                EntityManagerInterface $entityManager,
-                                FileManagerServiceInterface $fileManagerService)
+                                EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Post::class);
         $this->entityManager = $entityManager;
-        $this->fileManagerService = $fileManagerService;
     }
 
     /**
@@ -48,17 +44,11 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     /**
      * @inheritDoc
      */
-    public function setCreatePost(Post $post, ?UploadedFile $imageFile): Object
+    public function setCreatePost(Post $post): PostRepositoryInterface
     {
-        if ($imageFile) {
-            $imageFilename = $this->fileManagerService->uploadPostImage($imageFile);
-            $post->setImage($imageFilename);
-        }
-
-        $post->setCreatedAtValue()->setUpdatedAtValue()->setIsPublished();
         $this->entityManager->persist($post);
         $this->entityManager->flush();
-        return $post;
+        return $this;
     }
 
     /**

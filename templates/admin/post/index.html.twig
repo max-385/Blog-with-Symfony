@@ -44,7 +44,7 @@
                                 <img src="{{ asset('uploads/post/') }}{{ post.image }}" alt="post image"
                                      style="height: 80px; max-width: 120px;">
                                 {{ post.title }}
-                                <a href="{{ path('admin_post_update', {'id': post.id}) }}" class="btn btn-link">
+                                <a href="{{ path('admin_post_update', {'postId': post.id}) }}" class="btn btn-link">
                                     Update post
                                 </a>
                             </li>

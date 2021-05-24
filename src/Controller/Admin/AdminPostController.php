@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
+use App\Service\Post\PostService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,16 +18,20 @@ class AdminPostController extends AdminBaseController
 {
     private $categoryRepository;
     private $postRepository;
+    private $postService;
 
     /**
      * AdminPostController constructor.
      * @param CategoryRepository $categoryRepository
      * @param PostRepository $postRepository
+     * @param PostService $postService
      */
-    public function __construct(CategoryRepository $categoryRepository, PostRepository $postRepository)
+    public function __construct(CategoryRepository $categoryRepository, PostRepository $postRepository,
+                                PostService $postService)
     {
         $this->categoryRepository = $categoryRepository;
         $this->postRepository = $postRepository;
+        $this->postService = $postService;
     }
 
     /**
@@ -54,7 +59,7 @@ class AdminPostController extends AdminBaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $image = $form->get('image')->getData();
-            $this->postRepository->setCreatePost($post, $image);
+            $this->postService->handleCreatePost($post, $image);
             $this->addFlash('success', 'A new post has been added!');
             return $this->redirectToRoute('admin_post');
         }
@@ -66,14 +71,14 @@ class AdminPostController extends AdminBaseController
     }
 
     /**
-     * @Route("/admin/post/update/{id}", name="admin_post_update")
-     * @param int $id
+     * @Route("/admin/post/update/{postId}", name="admin_post_update")
+     * @param int $postId
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function updatePost(int $id, Request $request)
+    public function updatePost(int $postId, Request $request)
     {
-        $post = $this->postRepository->getPostById($id);
+        $post = $this->postRepository->getPostById($postId);
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
