@@ -3,10 +3,21 @@
 
 namespace App\Controller\Main;
 
+use App\Repository\PostRepositoryInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends BaseController
 {
+
+    /**
+     * @var PostRepositoryInterface
+     */
+    private $postRepository;
+
+    public function __construct(PostRepositoryInterface $postRepository)
+    {
+        $this->postRepository = $postRepository;
+    }
 
     /**
      * @Route("/", name="home")
@@ -14,6 +25,7 @@ class HomeController extends BaseController
     public function index()
     {
         $forRender = parent::renderDefault();
+        $forRender['posts'] = $this->postRepository->getAllPosts();
         return $this->render('main/index.html.twig', $forRender);
     }
 }

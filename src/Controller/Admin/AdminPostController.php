@@ -58,8 +58,7 @@ class AdminPostController extends AdminBaseController
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $image = $form->get('image')->getData();
-            $this->postService->handleCreatePost($post, $image);
+            $this->postService->handleCreatePost($post, $form);
             $this->addFlash('success', 'A new post has been added!');
             return $this->redirectToRoute('admin_post');
         }
@@ -83,12 +82,11 @@ class AdminPostController extends AdminBaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $image = $form->get('image')->getData();
-                $this->postRepository->setUpdatePost($post, $image);
+                $this->postService->handleUpdatePost($post, $form);
                 $this->addFlash('success', 'Post has been updated successfully');
             }
             if ($form->get('delete')->isClicked()) {
-                $this->postRepository->setDeletePost($post);
+                $this->postService->handleDeletePost($post);
                 $this->addFlash('success', 'Post has been deleted successfully');
             }
             return $this->redirectToRoute('admin_post');

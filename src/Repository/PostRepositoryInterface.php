@@ -17,24 +17,23 @@ interface PostRepositoryInterface
 
     /**
      * @param int $id
-     * @return Post
+     * @return Post|null
      */
-    public function getPostById(int $id): object;
+    public function getPostById(int $id): ?object;
 
 
     /**
      * @param Post $post
-     * @return PostRepositoryInterface
+     * @return Post
      */
-    public function setCreatePost(Post $post): self;
+    public function setCreatePost(Post $post): object;
 
 
     /**
      * @param Post $post
-     * @param UploadedFile $imageFile
      * @return Post
      */
-    public function setUpdatePost(Post $post, UploadedFile $imageFile): Post;
+    public function setUpdatePost(Post $post): object;
 
 
     /**

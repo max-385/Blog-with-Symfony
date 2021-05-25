@@ -30,13 +30,19 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
      */
     public function getAllPosts(): array
     {
-        return parent::findAll();
+        $db = $this->createQueryBuilder('p')
+            ->select('p.id', 'p.title', 'p.content', 'p.image', 'c.name as categoryName')
+            ->leftJoin('p.category', 'c');
+        $query = $db->getQuery();
+        return $query->execute();
+
+//        return parent::findAll();
     }
 
     /**
      * @inheritDoc
      */
-    public function getPostById(int $id): Object
+    public function getPostById(int $id): ?object
     {
         return parent::find($id);
     }
@@ -44,28 +50,18 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     /**
      * @inheritDoc
      */
-    public function setCreatePost(Post $post): PostRepositoryInterface
+    public function setCreatePost(Post $post): object
     {
         $this->entityManager->persist($post);
         $this->entityManager->flush();
-        return $this;
+        return $post;
     }
 
     /**
      * @inheritDoc
      */
-    public function setUpdatePost(Post $post, ?UploadedFile $imageFile): Post
+    public function setUpdatePost(Post $post): object
     {
-        if ($imageFile) {
-            $oldImageFilename = $post->getImage();
-            if ($oldImageFilename) {
-                $this->fileManagerService->removePostImage($oldImageFilename);
-            }
-            $imageFilename = $this->fileManagerService->uploadPostImage($imageFile);
-            $post->setImage($imageFilename);
-        }
-
-        $post->setUpdatedAtValue();
         $this->entityManager->flush();
         return $post;
     }
@@ -75,11 +71,6 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
      */
     public function setDeletePost(Post $post)
     {
-        $oldImageFilename = $post->getImage();
-        if ($oldImageFilename) {
-            $this->fileManagerService->removePostImage($oldImageFilename);
-        }
-
         $this->entityManager->remove($post);
         $this->entityManager->flush();
     }
