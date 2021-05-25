@@ -23,6 +23,12 @@ interface PostRepositoryInterface
 
 
     /**
+     * @return array
+     */
+    public function getFilterPostCategory(): array;
+
+
+    /**
      * @param Post $post
      * @return Post
      */

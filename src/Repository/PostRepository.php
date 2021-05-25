@@ -32,6 +32,10 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     {
         $db = $this->createQueryBuilder('p')
             ->select('p.id', 'p.title', 'p.content', 'p.image', 'c.name as categoryName')
+//            ->where('p.id > :id')
+//            ->setParameter('id', 25)
+//            ->orWhere('p.title = :title')
+//            ->setParameter('title', 'Test post')
             ->leftJoin('p.category', 'c');
         $query = $db->getQuery();
         return $query->execute();
@@ -45,6 +49,17 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     public function getPostById(int $id): ?object
     {
         return parent::find($id);
+    }
+
+    public function getFilterPostCategory(): array
+    {
+        $db = $this->createQueryBuilder('p')
+            ->select('pc.id as categoryId', 'pc.name as categoryName')
+            ->distinct()
+            ->leftJoin('p.category', 'pc');
+
+        $query = $db->getQuery();
+        return $query->execute();
     }
 
     /**

@@ -26,6 +26,7 @@ class HomeController extends BaseController
     {
         $forRender = parent::renderDefault();
         $forRender['posts'] = $this->postRepository->getAllPosts();
+        $forRender['post_filter'] = $this->postRepository->getFilterPostCategory();
         return $this->render('main/index.html.twig', $forRender);
     }
 }

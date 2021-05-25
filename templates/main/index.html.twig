@@ -31,6 +31,21 @@
         </div>
     </div>
 
+    <div class="container-fluid bg-light">
+        <div class="row no-gutters">
+            <div class="col-12 border-top">
+                <label for="category">Category</label>
+                <select name="category" id="category">
+                    <option value="">Select category</option>
+                    {% for post in post_filter %}
+                        <option value="{{ post.categoryId }}">
+                            {{ post.categoryName }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
