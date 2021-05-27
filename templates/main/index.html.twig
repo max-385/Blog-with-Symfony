@@ -12,30 +12,11 @@
         </div>
     </div>
 
-    <div class="container-fluid">
-        <div class="row no-gutters">
-            <div class="col-12 text-center mt-5">
-
-                {% for post in posts %}
-                    <h2> {{ post.categoryName }} </h2>
-                    <h1> {{ post.id }}) {{ post.title }} </h1>
-                    <p> {{ post.content }} </p>
-                    <p>
-                        <img src="{{ asset('uploads/post/') }}{{ post.image }}" alt="post image"
-                             style="height: 80px; max-width: 120px;">
-                    </p>
-                    <br><br>
-                {% endfor %}
-
-            </div>
-        </div>
-    </div>
-
     <div class="container-fluid bg-light">
         <div class="row no-gutters">
             <div class="col-12 border-top">
                 <label for="category">Category</label>
-                <select name="category" id="category">
+                <select name="filterPostCategory" id="filterPostCategory">
                     <option value="">Select category</option>
                     {% for post in post_filter %}
                         <option value="{{ post.categoryId }}">
@@ -47,9 +28,73 @@
         </div>
     </div>
 
+    <div class="container-fluid">
+        <div class="row no-gutters">
+            <div class="col-12 text-center mt-5">
+                <div class="posts">
+                </div>
+
+                {#                {% for post in posts %}
+                                    <h2> {{ post.categoryName }} </h2>
+                                    <h1> {{ post.id }}) {{ post.title }} </h1>
+                                    <p> {{ post.content }} </p>
+                                    <p>
+                                        <img src="{{ asset('uploads/post/') }}{{ post.image }}" alt="post image"
+                                             style="height: 80px; max-width: 120px;">
+                                    </p>
+                                    <br><br>
+                                {% endfor %}#}
+
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}
 
 
 
 {% block addJs %}
+    <script>
+        $(document).ready(function () {
+            const controller = '{{ path('data_post') }}';
+
+            $('#filterPostCategory').on('change', function () {
+                let categoryId = $(this).val();
+
+                ajaxPost(categoryId, controller);
+            })
+        });
+
+
+        function ajaxPost(categoryId, controller) {
+            let data = new FormData();
+            data.append('categoryId', categoryId);
+
+            $.ajax({
+                url: controller,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                dataType: "JSON",
+                data: data,
+                success: function (response) {
+                    $('.posts').html('');
+                    for (let i = 0; i < response.length; i++) {
+                        let post = response[i];
+                        $('.posts').append("<h2>" + post['categoryName'] + "</h2>");
+                        $('.posts').append("<h1>" + post['id'] + ') ' + post['title'] + "</h1>");
+                        $('.posts').append("<p>" + post['content'] + "</p>");
+                        $('.posts').append('<p> <img src="{{ asset("uploads/post/") }}'
+                            + post["image"] + ' " style="height: 80px; max-width: 120px;"></p><br><br>')
+
+                    }
+                },
+                error: function () {
+                    alert('error!')
+                }
+            });
+        }
+    </script>
+
 {% endblock %}

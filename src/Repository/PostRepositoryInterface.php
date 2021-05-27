@@ -48,4 +48,11 @@ interface PostRepositoryInterface
     public function setDeletePost(Post $post);
 
 
+    /**
+     * @param int $categoryId
+     * @return Post[]
+     */
+    public function getPostFilterJson(int $categoryId): array;
+
+
 }

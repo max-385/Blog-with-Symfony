@@ -62,6 +62,23 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         return $query->execute();
     }
 
+
+    /**
+     * @inheritDoc
+     */
+    public function getPostFilterJson(int $categoryId): array
+    {
+        $db = $this->createQueryBuilder('p')
+            ->select('p.id', 'p.title', 'p.content', 'p.image', 'pc.name as categoryName')
+            ->leftJoin('p.category', 'pc')
+            ->where('p.category = :categoryId')
+            ->setParameter('categoryId', $categoryId);
+
+        $query = $db->getQuery();
+        return $query->execute();
+    }
+
+
     /**
      * @inheritDoc
      */
